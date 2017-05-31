@@ -6,42 +6,71 @@
 </head>
 <body>
 
+<div id="mvvm-app">
+  <input type="text" v-model="someStr">
+  <input type="text" v-model="child.someStr">
+  <!-- <p v-class="className" class="abc">
+      {{someStr}}
+      <span v-text="child.someStr"></span>
+  </p> -->
+  <p>{{getHelloWord}}</p>
+  <p v-html="child.htmlStr"></p>
+  <button v-on:click="clickBtn">change model</button>
+</div>
+
+
+<script src="./js/observer.js"></script>
+<script src="./js/mvvm.js"></script>
+
 <script>
 
-var data = {
-  name: 'king',
-  age: 100
-}
+// var data = {
+//   name: 'king',
+//   age: {
+//     old: 100
+//   }
+// }
 
-observe(data);
-data.name = 'Queen';
-data.age = 80;
+// observe(data);
+// data.name = 'Queen';
+// data.age.old = 99;
 
-function observe (data) {
-  if (!data || typeof data !== 'object') {
-    return;
-  }
-  // 取出所有属性遍历
-  Object.keys(data).forEach(function (key) {
-    defineReactive(data, key, data[key]);
-  });
-}
+// function observe (data) {
+//   if (!data || typeof data !== 'object') {
+//     return;
+//   }
+//   // 取出所有属性遍历
+//   Object.keys(data).forEach(function (key) {
+//     defineReactive(data, key, data[key]);
+//   });
+// }
 
-function defineReactive (data, key, val) {
-  observe(val);  // 监听子属性
-  Object.defineProperty(data, key, {
-    enumerable: true,  // 可枚举
-    configuraable: false, // 不能再define
-    get: function () {
-      return val;
-    },
-    set: function (newVal) {
-      if (val === newVal) return;
-      console.log('监听到值变化', val, '--->', newVal);
-      val = newVal;
+// function defineReactive (data, key, val) {
+//   observe(val);  // 监听子属性
+//   Object.defineProperty(data, key, {
+//     enumerable: true,  // 可枚举
+//     configuraable: false, // 不能再define
+//     get: function () {
+//       return val;
+//     },
+//     set: function (newVal) {
+//       if (val === newVal) return;
+//       console.log('监听到值变化', val, '--->', newVal);
+//       val = newVal;
+//     }
+//   })
+// }
+// 
+var vm = new MVVM({
+  data: {
+    someStr: 'hello',
+    className: 'btn',
+    htmlStr: '<span style="color: #f00;">red</span>',
+    child: {
+      someStr: 'World!'
     }
-  })
-}
+  }
+})
 </script>
 </body>
 </html>
