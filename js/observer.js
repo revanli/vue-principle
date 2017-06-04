@@ -18,13 +18,18 @@ Observer.prototype = {
       enumerable: true, // 可枚举
       configurable: false,  // 子属性不能再define
       get: function () {
-
+        // 由于需要在闭包内添加watcher，所以通过Dep定义一个全局target属性，暂存watcher, 添加完移除
+        if (Dep.target) {
+          dep.depend();
+        }
+        return val;
       },
       set: function (newVal) {
         if (newVal === val) {
           return;
         }
-        val = newval;
+        console.log('监听到值变化', val, '--->', newVal);
+        val = newVal;
         childObj = observe(newVal);
       }
     });
@@ -38,3 +43,18 @@ function observe (value, vm) {
 
   return new Observer(value);
 }
+
+var uid = 0;
+
+function Dep () {
+  this.id = uid++;
+  this.subs = [];
+}
+
+Dep.prototype = {
+  depend: function () {
+    Dep.target.addDep(this);
+  }
+}
+
+Dep.target = null;
